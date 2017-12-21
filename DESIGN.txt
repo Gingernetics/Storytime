@@ -1,0 +1,72 @@
+===========================================================
+DESIGN DOCUMENT
+The structure and build schedule of the Storytime project
+===========================================================
+
+
+Collaborators - Kenny Chen, Fabiola Radosav, Jan Kowalski
+
+Mission Statement - 
+	Collaborative story maker
+	Multiple users are able to interact with a collection of stories.
+	Users can read from the stories and append their additions.
+
+User Interface - CLI
+	Once the user starts the program, they will be presented with a list of 
+	potential stories to read and edit
+	User will also be able to type 'help' for a list of valid commands.
+		help, create, read, edit, exit
+	The user will be able to type commands to either create a new story, 
+	choose a story to read, or add to a story.
+	Adding to a story will automatically present the user with the 
+	updated story.
+	Use Ctrl-D (EOF) to end editing a file
+		
+Technical Design -
+	Multiple Client - Server Model
+		Processes (fork)
+
+	Technical Concepts:
+		Semaphores to limit how many people can edit a file at once
+		Mini-interpreter: server interprets user's commands
+		Working with files / directories
+
+	Expansions:
+		stat: time of last access
+		Networking 
+		Random sentence generator
+
+
+	Files:
+		client.c
+			int main()
+				Connect to server
+				Read stdin, send data to subserver, read from subserver
+			
+		server.c
+			static void sighandler(int)
+				remove wkp on program end
+				End 
+			void process(char *)
+				interpret the command
+			void subserver(int)
+				handle working with the user
+			int main()
+
+
+
+		pipe_networking.c / .h
+			int client_handshake(int *)
+			int server_setup()
+			int server_connect(int)
+			
+		stories/
+			directory for story text files
+
+Timeline -
+	Wait until the last millisecond
+
+	
+	Milestone 0: Port over the code from fserver assignment
+
+	Milestone 1: Ad
