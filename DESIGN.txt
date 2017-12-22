@@ -35,7 +35,7 @@ Technical Design -
 		stat: time of last access
 		Networking 
 		Random sentence generator
-
+		Text editor - for editing (not just appending)
 
 	Files:
 		client.c
@@ -46,13 +46,12 @@ Technical Design -
 		server.c
 			static void sighandler(int)
 				remove wkp on program end
-				End 
 			void process(char *)
 				interpret the command
 			void subserver(int)
 				handle working with the user
 			int main()
-
+				renews wkp, allocates subserver
 
 
 		pipe_networking.c / .h
@@ -66,7 +65,19 @@ Technical Design -
 Timeline -
 	Wait until the last millisecond
 
+		
+	Task 0: Port over the code from fserver assignment
+		12/22/17 Group
+	Task 1: Change the process to interpret commands
+		12/27/17 Kenny
+	Task 2: Write function that creates a semaphore for all stories on access. (Read, Write) 
+		12/30/17 Jan
+	Task 3: Have the subserver read from stories and write from stories
+		1/3/17 Fabiola
 	
-	Milestone 0: Port over the code from fserver assignment
+	Milestone 0: 1 client and 1 story
 
-	Milestone 1: Ad
+	Milestone 1: multiple clients and 1 story (semaphore fun)
+
+	Milestone 2: multiple clients and multiple stories (lots of semaphore fun)
+
