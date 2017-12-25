@@ -50,3 +50,19 @@ void process(char * s) {
     edit();
   }
 }
+
+void help() {
+
+}
+
+void create() {
+
+}
+
+void read_story() {
+
+}
+
+void edit() {
+
+}
