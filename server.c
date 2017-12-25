@@ -21,6 +21,8 @@ int main() {
 
     if (fork() == 0) {
       subserver(from_client);
+      printf("subserver done\n");
+      exit(0);
     } else {
       close(from_client);
     }
@@ -30,9 +32,8 @@ int main() {
 void subserver(int from_client) {
   int to_client = server_connect(from_client);
   char buf[BUFFER_SIZE];
-  
-  while (1) {
-    read(from_client, buf, sizeof(buf));
+
+  while (read(from_client, buf, sizeof(buf))) {
     process(buf);
     write(to_client, buf, sizeof(buf));
   }
