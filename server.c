@@ -1,11 +1,8 @@
 #include "pipe_networking.h"
-#include "forking_server.h"
+#include "server.h"
 
 #include <signal.h>
 #include <ctype.h>
-
-void process(char *s);
-void subserver(int from_client);
 
 static void sighandler(int signo) {
   if (signo == SIGINT) {
@@ -42,6 +39,7 @@ void subserver(int from_client) {
 }
 
 void process(char * s) {
+  
   if (strcmp(s, "help") == 0) {
     help();
   } else if (strcmp(s, "create") == 0) {
