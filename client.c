@@ -1,21 +1,23 @@
-#include "pipe_networking.h"
+#include "networking.h"
 
-int main() {
+int main(int argc, char **argv) {
 
-  int to_server;
-  int from_server;
+  int server_socket;
   char buffer[BUFFER_SIZE];
 
-  from_server = client_handshake( &to_server );
+  if (argc == 2)
+    server_socket = client_setup( argv[1]);
+  else
+    server_socket = client_setup( TEST_IP );
 
   while (1) {
     printf("enter command: \n");
     if (!fgets(buffer, sizeof(buffer), stdin)) //if fgets only gets eof char
       *buffer = 0;
     if (strchr(buffer, '\n'))    //buffer might not have newline
-      *strchr(buffer, '\n') = 0;
-    write(to_server, buffer, sizeof(buffer));
-    read(from_server, buffer, sizeof(buffer));
-    printf("%s\n", buffer);
+      *strchr(buffer, '\n') = 0;    
+    write(server_socket, buffer, sizeof(buffer));
+    read(server_socket, buffer, sizeof(buffer));
+    printf("received: [%s]\n", buffer);
   }
 }

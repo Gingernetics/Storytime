@@ -4,39 +4,33 @@
 #include <signal.h>
 #include <ctype.h>
 
-static void sighandler(int signo) {
-  if (signo == SIGINT) {
-    remove("luigi");
-    exit(0);
-  }
-}
-
 int main() {
-  signal(SIGINT, sighandler);
-  
-  int from_client;
+  int listen_socket;
+  int f;
+  listen_socket = server_setup();
 
   while (1) {
-    from_client = server_setup();
 
-    if (fork() == 0) {
-      subserver(from_client);
-      printf("subserver done\n");
-      exit(0);
-    } else {
-      close(from_client);
-    }
+    int client_socket = server_connect(listen_socket);
+    f = fork();
+    if (f == 0)
+      subserver(client_socket);
+    else
+      close(client_socket);
   }
 }
 
 void subserver(int from_client) {
-  int to_client = server_connect(from_client);
-  char buf[BUFFER_SIZE];
+  char buffer[BUFFER_SIZE];
 
-  while (read(from_client, buf, sizeof(buf))) {
-    process(buf);
-    write(to_client, buf, sizeof(buf));
-  }
+  while (read(client_socket, buffer, sizeof(buffer))) {
+
+    printf("[subserver %d] received: [%s]\n", getpid(), buffer);
+    process(buffer);
+    write(client_socket, buffer, sizeof(buffer));
+  }//end read loop
+  close(client_socket);
+  exit(0);
 }
 
 /*
