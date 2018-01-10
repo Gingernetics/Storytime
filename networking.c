@@ -26,7 +26,7 @@ int server_setup() {
 
   //setup structs for getaddrinfo
   struct addrinfo * hints, * results;
-  hints = calloc(1, sizeof(struct addrinfo));
+  hints = (struct addrinfo *)calloc(1, sizeof(struct addrinfo));
   hints->ai_family = AF_INET;  //IPv4 address
   hints->ai_socktype = SOCK_STREAM;  //TCP socket
   hints->ai_flags = AI_PASSIVE;  //Use all valid addresses
@@ -93,7 +93,7 @@ int client_setup(char * server) {
   /* hints->ai_flags not needed because the client
      specifies the desired address. */
   struct addrinfo * hints, * results;
-  hints = calloc(1, sizeof(struct addrinfo));
+  hints = (struct addrinfo *)calloc(1, sizeof(struct addrinfo));
   hints->ai_family = AF_INET;  //IPv4
   hints->ai_socktype = SOCK_STREAM;  //TCP socket
   getaddrinfo(server, PORT, hints, &results);

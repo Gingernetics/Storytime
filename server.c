@@ -1,4 +1,4 @@
-#include "pipe_networking.h"
+#include "networking.h"
 #include "server.h"
 
 #include <signal.h>
@@ -20,7 +20,7 @@ int main() {
   }
 }
 
-void subserver(int from_client) {
+void subserver(int client_socket) {
   char buffer[BUFFER_SIZE];
 
   while (read(client_socket, buffer, sizeof(buffer))) {

@@ -11,11 +11,9 @@ int main(int argc, char **argv) {
     server_socket = client_setup( TEST_IP );
 
   while (1) {
-    printf("enter command: \n");
-    if (!fgets(buffer, sizeof(buffer), stdin)) //if fgets only gets eof char
-      *buffer = 0;
-    if (strchr(buffer, '\n'))    //buffer might not have newline
-      *strchr(buffer, '\n') = 0;    
+    printf("enter data: ");
+    fgets(buffer, sizeof(buffer), stdin);
+    *strchr(buffer, '\n') = 0;
     write(server_socket, buffer, sizeof(buffer));
     read(server_socket, buffer, sizeof(buffer));
     printf("received: [%s]\n", buffer);
