@@ -47,7 +47,7 @@ void process(char * s) {
   if (strcmp(*args, "help") == 0) {
     help(s);
   } else if (strcmp(*args, "create") == 0) {
-    create();
+    create(args[1]);
   } else if (strcmp(*args, "read") == 0) {
     read_story();
   } else if (strcmp(*args, "edit") == 0) {
@@ -59,12 +59,15 @@ void process(char * s) {
 
 //print a list of valid commands
 void help(char *buf) {
-  strcpy(buf, "Valid commands:\nhelp - get this list\ncreate [name of story]\nread [name of story]\nedit [name of story]");
+  strcpy(buf, "Valid commands:\n\thelp - get this list\n\tcreate [name of story]\n\tread [name of story]\n\tedit [name of story]");
 }
 
 //make the file with the given name, then let client edit it
-void create() {
-
+void create(char *filename) {
+	printf("This prints create!\n");
+	int fd;
+        fd = open(filename, O_CREAT | O_EXCL | O_RDWR , 0666);
+        close(fd);
 }
 
 //read the file, write to client

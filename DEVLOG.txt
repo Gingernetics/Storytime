@@ -1,0 +1,12 @@
+Timestamps
+
+
+|^| Jan Kowalski |^| 1/11/18 |^| 2:50-3:35 |^|
+	Errors Uncovered:
+		- Server will remain bound to port usually 20 s after client has disconnected
+		- Server will drop after client disconnects, which is believed to be a result of the interrupt key being passed as input
+		- Server will drop after an invalid command is provided
+
+	Progress:
+		- Improved user interface
+		- Implemented the file creation system
