@@ -1,9 +1,9 @@
-void process(char *s);
-void subserver(int from_client);
+void process(int client_socket, char * buf);
+void subserver(int client_socket);
 
-void help();
-void create();
-void read_story();
+void help(int client_socket, char *buf);
+void create(int client_socket, char *buf, char *filename);
+void read_story(int client_socket, char *buf, char *filename);
 void edit();
 
 char ** parse_args(char *line);

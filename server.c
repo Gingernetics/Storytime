@@ -26,8 +26,7 @@ void subserver(int client_socket) {
   while (read(client_socket, buffer, sizeof(buffer))) {
 
     printf("[subserver %d] received: [%s]\n", getpid(), buffer);
-    process(buffer);
-    write(client_socket, buffer, sizeof(buffer));
+    process(client_socket, buffer);
   }//end read loop
   close(client_socket);
   exit(0);
@@ -41,38 +40,46 @@ void subserver(int client_socket) {
   read <name of story>
   edit <name of story>
  */
-void process(char * s) {
-  char **args = parse_args(s);
+void process(int client_socket, char * buf) {
+  char **args = parse_args(buf);
   
   if (strcmp(*args, "help") == 0) {
-    help(s);
+    help(client_socket, buf);
   } else if (strcmp(*args, "create") == 0) {
-    create(args[1]);
+    create(client_socket, buf, args[1]);
   } else if (strcmp(*args, "read") == 0) {
-    read_story();
+    read_story(client_socket, buf, args[1]);
   } else if (strcmp(*args, "edit") == 0) {
     edit();
   } else {
-    strcpy(s, "Unknown command");
+    write(client_socket, "Unknown command", BUFFER_SIZE);
   }
+
+  free(args);
 }
 
 //print a list of valid commands
-void help(char *buf) {
-  strcpy(buf, "Valid commands:\n\thelp - get this list\n\tcreate [name of story]\n\tread [name of story]\n\tedit [name of story]");
+void help(int client_socket, char *buf) {
+  write(client_socket, "Valid commands:\n\thelp - get this list\n\tcreate [name of story]\n\tread [name of story]\n\tedit [name of story]", BUFFER_SIZE);
 }
 
 //make the file with the given name, then let client edit it
-void create(char *filename) {
-	printf("This prints create!\n");
-	int fd;
-        fd = open(filename, O_CREAT | O_EXCL | O_RDWR , 0666);
-        close(fd);
+void create(int client_socket, char *buf, char *filename) {
+  char f[BUFFER_SIZE]; //don't use filename (part of buf)
+  strcpy(f, filename);
+  sprintf(buf, "created file: %s", f);
+  write(client_socket, buf, BUFFER_SIZE);
+  int fd;
+  fd = open(f, O_CREAT | O_EXCL , 0666);
+  close(fd);
 }
 
 //read the file, write to client
-void read_story() {
-
+void read_story(int client_socket, char *buf, char *filename) {
+  int fd = open(filename, O_EXCL | O_RDONLY);
+  read(fd, buf, BUFFER_SIZE);
+  write(client_socket, buf, BUFFER_SIZE);
+  close(fd);
 }
 
 //read the file, prompt client for addition, then append to file
