@@ -5,6 +5,8 @@
 #include <ctype.h>
 
 int main() {
+  chdir("stories");
+  
   int listen_socket;
   int f;
   listen_socket = server_setup();
@@ -42,15 +44,25 @@ void subserver(int client_socket) {
  */
 void process(int client_socket, char * buf) {
   char **args = parse_args(buf);
+  char *input_error = "Please input a story name";
   
   if (strcmp(*args, "help") == 0) {
     help(client_socket, buf);
   } else if (strcmp(*args, "create") == 0) {
-    create(client_socket, buf, args[1]);
+    if (args[1])
+      create(client_socket, buf, args[1]);
+    else
+      write(client_socket, input_error, strlen(input_error));
   } else if (strcmp(*args, "read") == 0) {
-    read_story(client_socket, buf, args[1]);
+    if (args[1])
+      read_story(client_socket, buf, args[1]);
+    else
+      write(client_socket, input_error, strlen(input_error));
   } else if (strcmp(*args, "edit") == 0) {
-    edit();
+    if (args[1])
+      edit(client_socket, buf, args[1]);
+    else
+      write(client_socket, input_error, strlen(input_error));
   } else {
     write(client_socket, "Unknown command", BUFFER_SIZE);
   }
@@ -60,7 +72,8 @@ void process(int client_socket, char * buf) {
 
 //print a list of valid commands
 void help(int client_socket, char *buf) {
-  write(client_socket, "Valid commands:\n\thelp - get this list\n\tcreate [name of story]\n\tread [name of story]\n\tedit [name of story]", BUFFER_SIZE);
+  char *s = "Valid commands:\n\thelp - get this list\n\tcreate [name of story]\n\tread [name of story]\n\tedit [name of story]";
+  write(client_socket, s, strlen(s));
 }
 
 //make the file with the given name, then let client edit it
@@ -77,14 +90,20 @@ void create(int client_socket, char *buf, char *filename) {
 //read the file, write to client
 void read_story(int client_socket, char *buf, char *filename) {
   int fd = open(filename, O_EXCL | O_RDONLY);
-  read(fd, buf, BUFFER_SIZE);
-  write(client_socket, buf, BUFFER_SIZE);
+  int len = read(fd, buf, BUFFER_SIZE);
+  printf("len: %d\n", len);
+  if (len == 0) {
+    char *s = "<There is no text>";
+    write(client_socket, s, strlen(s));
+  } else 
+    write(client_socket, buf, len);
   close(fd);
 }
 
 //read the file, prompt client for addition, then append to file
-void edit() {
-
+void edit(int client_socket, char *buf, char *filename) {
+  read_story(client_socket, buf, filename);
+  //int fd = open(filename, O_EXCL | , 0666
 }
 
 /*

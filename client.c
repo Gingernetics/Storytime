@@ -17,7 +17,9 @@ printf("\t\t---------------------------------------------------\n");
     fgets(buffer, sizeof(buffer), stdin);
     *strchr(buffer, '\n') = 0;
     write(server_socket, buffer, sizeof(buffer));
-    read(server_socket, buffer, sizeof(buffer));
+    int len = read(server_socket, buffer, sizeof(buffer));
+    printf("len: %d\n", len);
+    buffer[len] = 0;
     printf("received: [%s]\n", buffer);
   }
 }
