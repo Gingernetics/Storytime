@@ -63,6 +63,7 @@ int server_connect(int sd) {
   int client_socket;
   socklen_t sock_size;
   struct sockaddr_storage client_address;
+  sock_size = sizeof(client_address);
 
   client_socket = accept(sd, (struct sockaddr *)&client_address, &sock_size);
   error_check(client_socket, "server connection issue");
