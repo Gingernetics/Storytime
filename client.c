@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
       printf("enter addition: ");
     }
     else {
-      printf("enter data: ");
+      printf("enter command: ");
     }
     fgets(buffer, sizeof(buffer), stdin);
     *strchr(buffer, '\n') = 0;
@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
 int has_edit(char *s) {
   char copy[BUFFER_SIZE];
   strcpy(copy, s);
-  
+
   char **args = parse_args(copy);
   int edit = 0;
   if (strcmp(args[0], "edit") == 0)
