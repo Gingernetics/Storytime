@@ -66,6 +66,8 @@ void process(int client_socket, char * buf) {
     edit(client_socket, buf, args[1]);
     else
     write(client_socket, input_error, strlen(input_error));
+  } else if (strcmp(*args, "list") == 0) {
+    list(client_socket, buf);
   } else {
     char *error = "Unknown command";
     write(client_socket, error, strlen(error));
@@ -167,6 +169,27 @@ void edit(int client_socket, char *buf, char *filename) {
   read_story(client_socket, buf, f);
 }
 
+//list the stories
+void list(int client_socket, char *buf) {
+  *buf = 0;
+
+  DIR *d;
+  struct dirent *dir;
+  d = opendir(".");
+  if (d) {
+    while ((dir = readdir(d)) != NULL) {
+      char *name = dir->d_name;
+      if (strcmp(name, ".") == 0 ||
+          strcmp(name, "..") == 0)
+          continue;
+      strcat(buf, dir->d_name);
+      strcat(buf, "\n");
+    }
+    closedir(d);
+  }
+
+  write(client_socket, buf, strlen(buf));
+}
 /*
 ex: takes "ls -a -l"
 returns array ["ls", "-a", "-l", NULL]
