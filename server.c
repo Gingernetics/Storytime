@@ -225,6 +225,8 @@ void list(int client_socket, char *buf) {
     closedir(d);
   }
 
+  if (strlen(buf) == 0)
+    strcpy(buf, "There are no stories. :(");
   write(client_socket, buf, strlen(buf));
 }
 
