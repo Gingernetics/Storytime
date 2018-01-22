@@ -114,7 +114,7 @@ void process(int client_socket, char * buf) {
 
 //print a list of valid commands
 void help(int client_socket, char *buf) {
-  char *s = "Valid commands:\n\thelp - get this list\n\tcreate [name of story]\n\tread [name of story]\n\tedit [name of story]";
+  char *s = "Valid commands:\n\thelp - get this list\n\tcreate [name of story]\n\tread [name of story]\n\tedit [name of story]\n\tlist - view available stories";
   write(client_socket, s, strlen(s));
 }
 
