@@ -1,5 +1,13 @@
 Timestamps
+|^| Kenny Chen |^| 1/18/18 |^| :30 - 11:00|^|
+        Progress:
+                - Port functionality from dwsource networking example
 
+
+|^| Kenny Chen && Jan Kowalski && Fabiola Radosav |^| 1/10/18 |^| 10:30 - 11:00|^|
+        Progress:
+                - Updated the server from forking variety to sockets
+                - Initialize help function
 
 |^| Jan Kowalski |^| 1/11/18 |^| 2:50-3:35 |^|
 	Errors Uncovered:
@@ -10,3 +18,25 @@ Timestamps
 	Progress:
 		- Improved user interface
 		- Implemented the file creation system
+
+|^| Kenny Chen && Jan Kowalski && Fabiola Radosav |^| 1/18/18 |^| 10:30 - 11:00|^|
+        Progress:
+                - Set the directory to be story on startup
+                - Began work on acessing files
+
+
+|^| Kenny Chen && Jan Kowalski && Fabiola Radosav |^| 1/19/18 |^| 10:30 - 11:00|^|
+        Progress:
+                - Passed Buffer correctly
+                - Implemented read function
+                
+|^| Kenny Chen && Jan Kowalski && Fabiola Radosav |^| 1/22/18 |^| 10:00 - 5:00 |^|
+        Errors Uncovered:
+                - Reading / editing directories
+                - Inputing only newline killed client
+        Progress:
+                - Added edit
+                - Added semaphores
+                - Added list
+                - Change prompt for editing
+                - Remove semaphores at program end (w/ signal handler)
