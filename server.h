@@ -1,6 +1,8 @@
 #include <dirent.h>
 #include <sys/sem.h>
 
+void remove_semaphores();
+
 void process(int client_socket, char * buf);
 void subserver(int client_socket);
 

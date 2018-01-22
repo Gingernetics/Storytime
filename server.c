@@ -4,7 +4,43 @@
 #include <signal.h>
 #include <ctype.h>
 
+static void sig_handler(int signo){
+  if (signo == SIGINT){
+    printf("SIGINT received\nRemoving all semaphores\n");
+    remove_semaphores();
+    exit(SIGINT);
+  }
+}
+
+//Remove all semaphores
+void remove_semaphores(){
+  //go through all stories and get corresponding semaphore
+  DIR *d;
+  struct dirent *dir;
+  d = opendir(".");
+  if (d) {
+    while ((dir = readdir(d)) != NULL) {
+      char *filename = dir->d_name;
+      if (strcmp(filename, ".") == 0 ||
+      strcmp(filename, "..") == 0)
+      continue;
+
+      //create key using filename
+      int key = ftok(filename, 42);
+
+      //Gets semaphores for deletion
+      int semid = semget(key, 0, 0);
+      if (semid != -1)
+      semctl(semid, 0, IPC_RMID);
+    }
+    closedir(d);
+  }
+
+}
+
+
 int main() {
+  signal(SIGINT, sig_handler);
   chdir("stories");
 
   int listen_socket;
@@ -28,7 +64,7 @@ void subserver(int client_socket) {
   while (1) {
     int len = read(client_socket, buffer, sizeof(buffer));
     if (len == 0)
-      break;
+    break;
     buffer[len] = 0;
     printf("[subserver %d] received: [%s]\n", getpid(), buffer);
     process(client_socket, buffer);
@@ -181,8 +217,8 @@ void list(int client_socket, char *buf) {
     while ((dir = readdir(d)) != NULL) {
       char *name = dir->d_name;
       if (strcmp(name, ".") == 0 ||
-          strcmp(name, "..") == 0)
-          continue;
+      strcmp(name, "..") == 0)
+      continue;
       strcat(buf, dir->d_name);
       strcat(buf, "\n");
     }
