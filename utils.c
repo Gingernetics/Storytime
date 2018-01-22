@@ -1,4 +1,4 @@
-#include "networking.h"
+#include "utils.h"
 
 void error_check( int i, char *s ) {
   if ( i < 0 ) {
@@ -108,4 +108,29 @@ int client_setup(char * server) {
   freeaddrinfo(results);
 
   return sd;
+}
+
+/*
+ex: takes "ls -a -l"
+returns array ["ls", "-a", "-l", NULL]
+
+assume no more than 19 args
+*/
+char **parse_args(char *line) {
+  //pointer to "array"; free this later
+  char **args = malloc(20 * sizeof(char *));
+
+  int i = 0;
+  while (line) {
+    char *arg = strsep(&line, " ");
+    //get rid of extra spaces
+    if (strcmp(arg, "") == 0){
+      continue;
+    }
+    args[i] = arg;
+    i++;
+  }
+  args[i] = NULL;
+
+  return args;
 }

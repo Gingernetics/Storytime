@@ -1,19 +1,19 @@
 all: client server
 
-server: server.o networking.o
-	gcc -o server server.o networking.o
+server: server.o utils.o
+	gcc -o server server.o utils.o
 
-client: client.o networking.o
-	gcc -o client client.o networking.o
+client: client.o utils.o
+	gcc -o client client.o utils.o
 
-client.o: client.c networking.h
+client.o: client.c utils.h
 	gcc -c client.c
 
-server.o: server.c networking.h
+server.o: server.c utils.h
 	gcc -c server.c
 
-networking.o: networking.c networking.h
-	gcc -c networking.c
+utils.o: utils.c utils.h
+	gcc -c utils.c
 
 clean:
 	rm -f *.o

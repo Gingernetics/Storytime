@@ -1,4 +1,4 @@
-#include "networking.h"
+#include "utils.h"
 #include "server.h"
 
 #include <signal.h>
@@ -189,30 +189,6 @@ void list(int client_socket, char *buf) {
   }
 
   write(client_socket, buf, strlen(buf));
-}
-/*
-ex: takes "ls -a -l"
-returns array ["ls", "-a", "-l", NULL]
-
-assume no more than 19 args
-*/
-char **parse_args(char *line) {
-  //pointer to "array"; free this later
-  char **args = malloc(20 * sizeof(char *));
-
-  int i = 0;
-  while (line) {
-    char *arg = strsep(&line, " ");
-    //get rid of extra spaces
-    if (strcmp(arg, "") == 0){
-      continue;
-    }
-    args[i] = arg;
-    i++;
-  }
-  args[i] = NULL;
-
-  return args;
 }
 
 //creates semaphore (if it doesn't exist) and checks the value

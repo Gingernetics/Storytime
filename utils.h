@@ -11,8 +11,8 @@
 #include <errno.h>
 #include <fcntl.h>
 
-#ifndef NETWORKING_H
-#define NETWORKING_H
+#ifndef UTILS_H
+#define UTILS_H
 
 #define BUFFER_SIZE 10000
 #define PORT "9000"
@@ -23,5 +23,6 @@ int server_setup();
 int server_connect(int sd);
 int client_setup(char * server);
 
+char ** parse_args(char *line);
 
 #endif
