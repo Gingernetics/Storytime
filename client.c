@@ -26,11 +26,12 @@ int main(int argc, char **argv) {
       printf("enter command: ");
     }
     fgets(buffer, sizeof(buffer), stdin);
-    *strchr(buffer, '\n') = 0;
-    if (strlen(buffer) == 0)
-    strcpy(buffer, "temp");
 
     if (!edit){
+      *strchr(buffer, '\n') = 0;
+      if (strlen(buffer) == 0)
+      strcpy(buffer, "temp");
+
       edit = has_edit(buffer);
     } else {
       edit = 0;

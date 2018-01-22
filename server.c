@@ -196,7 +196,6 @@ void edit(int client_socket, char *buf, char *filename) {
   //if no input, don't write
   if (len != 0)
   write(fd, buf, strlen(buf));
-  write(fd, "\n", 1);
   close(fd);
 
   //up
