@@ -26,7 +26,6 @@ void subserver(int client_socket) {
   char buffer[BUFFER_SIZE];
 
   while (read(client_socket, buffer, sizeof(buffer))) {
-
     printf("[subserver %d] received: [%s]\n", getpid(), buffer);
     process(client_socket, buffer);
   }//end read loop
@@ -79,8 +78,12 @@ void help(int client_socket, char *buf) {
 
 //make the file with the given name, then let client edit it
 void create(int client_socket, char *buf, char *filename) {
+  if (!filename_handler(client_socket, filename))
+  return;
+
   char f[BUFFER_SIZE]; //don't use filename (part of buf)
   strcpy(f, filename);
+
   sprintf(buf, "created file: %s", f);
   write(client_socket, buf, strlen(buf));
   int fd;
@@ -90,12 +93,21 @@ void create(int client_socket, char *buf, char *filename) {
 
 //read the file, write to client
 void read_story(int client_socket, char *buf, char *filename) {
+  if (!filename_handler(client_socket, filename))
+  return;
+
+  //check if story exists
   int fd = open(filename, O_EXCL | O_RDONLY);
   if (fd == -1) {
     char *s = "There is no such story.";
     write(client_socket, s, strlen(s));
     return;
   }
+
+  int semid = semaphore_handler(client_socket, filename);
+  if (semid == -1)
+  return;
+
   int len = read(fd, buf, BUFFER_SIZE);
   printf("len: %d\n", len);
   if (len == 0) {
@@ -108,9 +120,13 @@ void read_story(int client_socket, char *buf, char *filename) {
 
 //read the file, prompt client for addition, then append to file
 void edit(int client_socket, char *buf, char *filename) {
+  if (!filename_handler(client_socket, filename))
+  return;
+
   char f[BUFFER_SIZE]; //don't use filename (part of buf)
   strcpy(f, filename);
 
+  //check if story exists
   int fd = open(f, O_EXCL | O_WRONLY | O_APPEND, 0666);
   if (fd == -1) {
     char *s = "There is no such story.";
@@ -119,29 +135,13 @@ void edit(int client_socket, char *buf, char *filename) {
   }
   close(fd);
 
-  int key = ftok(filename, 42);
-  if (key == -1) {
-    printf("ftok failed with errno = %d\n", errno);
-    return;
-  }
-
-  int semid = semget(key, 1, 0664 | IPC_CREAT | IPC_EXCL);
-  if (semid != -1) {
-    union semun sem;
-    sem.val = 1;
-    semctl(semid, 0, SETVAL, sem);
-  }
-  semid = semget(key, 1, 0664);
-
-  printf("val : %d\n", semctl(semid, 0, GETVAL));
-  if (semctl(semid, 0, GETVAL) == 0) {
-    char *s = "Someone is editing the story. Please wait.";
-    write(client_socket, s, strlen(s));
-    return;
-  }
+  int semid = semaphore_handler(client_socket, filename);
+  if (semid == -1)
+  return;
 
   read_story(client_socket, buf, f);
 
+  //down
   struct sembuf arg;
   arg.sem_num = 0;
   arg.sem_op = -1;
@@ -150,9 +150,12 @@ void edit(int client_socket, char *buf, char *filename) {
 
   fd = open(f, O_EXCL | O_WRONLY | O_APPEND, 0666);
   int len = read(client_socket, buf, BUFFER_SIZE);
+  //if no input, don't write
   if (len != 0)
-    write(fd, buf, strlen(buf));
+  write(fd, buf, strlen(buf));
   close(fd);
+
+  //up
   arg.sem_op = 1;
   semop(semid, &arg, 1);
 
@@ -182,4 +185,46 @@ char **parse_args(char *line) {
   args[i] = NULL;
 
   return args;
+}
+
+//creates semaphore (if it doesn't exist) and checks the value
+int semaphore_handler(int client_socket, char *filename) {
+  //create key using filename
+  int key = ftok(filename, 42);
+
+  //create semaphore if not created
+  int semid = semget(key, 1, 0664 | IPC_CREAT | IPC_EXCL);
+  if (semid != -1) {
+    union semun sem;
+    sem.val = 1;
+    semctl(semid, 0, SETVAL, sem);
+  }
+  //use actual semaphore
+  semid = semget(key, 1, 0664);
+
+  //check value of semaphore
+  if (semctl(semid, 0, GETVAL) == 0) {
+    char *s = "Someone is editing the story. Please wait.";
+    write(client_socket, s, strlen(s));
+    return -1;
+  }
+
+  return semid;
+}
+
+//check if the file doesn't change directory
+int valid_file(char *s) {
+  //check if contains slashes
+  if (strchr(s, '/') == NULL)
+  return 1;
+  return 0;
+}
+
+int filename_handler(int client_socket, char *filename) {
+  if (!valid_file(filename)) {
+    char *s = "Invalid file. Please don't change directories";
+    write(client_socket, s, strlen(s));
+    return 0;
+  }
+  return 1;
 }

@@ -8,6 +8,10 @@ void edit(int client_socket, char *buf, char *filename);
 
 char ** parse_args(char *line);
 
+int semaphore_handler(int client_socket, char *filename);
+int valid_file(char *s);
+int filename_handler(int client_socket, char *filename);
+
 union semun {
   int              val;    /* Value for SETVAL */
   struct semid_ds *buf;    /* Buffer for IPC_STAT, IPC_SET */
