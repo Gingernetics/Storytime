@@ -126,10 +126,13 @@ void create(int client_socket, char *buf, char *filename) {
   char f[BUFFER_SIZE]; //don't use filename (part of buf)
   strcpy(f, filename);
 
-  sprintf(buf, "created file: %s", f);
-  write(client_socket, buf, strlen(buf));
   int fd;
   fd = open(f, O_CREAT | O_EXCL , 0666);
+  if(fd == -1)
+  	sprintf(buf, "File already created: %s", f);
+  else
+  	sprintf(buf, "Created file: %s", f);	
+  write(client_socket, buf, strlen(buf));
   close(fd);
 }
 
