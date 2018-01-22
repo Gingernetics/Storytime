@@ -25,7 +25,11 @@ int main() {
 void subserver(int client_socket) {
   char buffer[BUFFER_SIZE];
 
-  while (read(client_socket, buffer, sizeof(buffer))) {
+  while (1) {
+    int len = read(client_socket, buffer, sizeof(buffer));
+    if (len == 0)
+      break;
+    buffer[len] = 0;
     printf("[subserver %d] received: [%s]\n", getpid(), buffer);
     process(client_socket, buffer);
   }//end read loop
@@ -150,6 +154,7 @@ void edit(int client_socket, char *buf, char *filename) {
 
   fd = open(f, O_EXCL | O_WRONLY | O_APPEND, 0666);
   int len = read(client_socket, buf, BUFFER_SIZE);
+  buf[len] = 0;
   //if no input, don't write
   if (len != 0)
   write(fd, buf, strlen(buf));

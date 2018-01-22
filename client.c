@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
   while (1) {
     printf("enter data: ");
     fgets(buffer, sizeof(buffer), stdin);
-    *strchr(buffer, '\n') = 0;;
+    *strchr(buffer, '\n') = 0;
     if (strlen(buffer) == 0)
     strcpy(buffer, "temp");
     write(server_socket, buffer, strlen(buffer));
