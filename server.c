@@ -153,8 +153,7 @@ void read_story(int client_socket, char *buf, char *filename) {
   int len = read(fd, buf, BUFFER_SIZE);
   printf("len: %d\n", len);
   if (len == 0) {
-    char *s = "<There is no text>";
-    write(client_socket, s, strlen(s));
+    write(client_socket, no_text, strlen(no_text));
   } else
   write(client_socket, buf, len);
   close(fd);
@@ -171,8 +170,7 @@ void edit(int client_socket, char *buf, char *filename) {
   //check if story exists
   int fd = open(f, O_EXCL | O_WRONLY | O_APPEND, 0666);
   if (fd == -1) {
-    char *s = "There is no such story.";
-    write(client_socket, s, strlen(s));
+    write(client_socket, no_story, strlen(no_story));
     return;
   }
   close(fd);
@@ -190,11 +188,12 @@ void edit(int client_socket, char *buf, char *filename) {
   arg.sem_flg = SEM_UNDO | IPC_NOWAIT;
   semop(semid, &arg, 1);
 
-  fd = open(f, O_EXCL | O_WRONLY | O_APPEND, 0666);
+  fd = open(f, O_EXCL | O_WRONLY | O_TRUNC, 0666);
   int len = read(client_socket, buf, BUFFER_SIZE);
   buf[len] = 0;
+
   //if no input, don't write
-  if (len != 0)
+  if (len != 0 && strcmp(buf, no_text) != 0)
   write(fd, buf, strlen(buf));
   close(fd);
 

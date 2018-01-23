@@ -23,6 +23,9 @@ int server_setup();
 int server_connect(int sd);
 int client_setup(char * server);
 
+#define no_story "There is no such story."
+#define no_text "<There is no text>"
+
 char ** parse_args(char *line);
 
 #endif

@@ -20,12 +20,42 @@ int main(int argc, char **argv) {
 
   while (1) {
     if (edit) {
-      printf("enter addition: ");
+      //printf("enter addition: ");
+
+      //write buffer to file
+      char name[17] = "storyXXXXXX";
+      int fd = mkstemp(name);
+      printf("fd: %d\tname: %s\n", fd, name);
+      write(fd, buffer, strlen(buffer));
+
+      printf("buffer: %s\n", buffer);
+
+      //use default text editor by getting environment variables
+      //use nano for now
+      //fork, exec, wait
+      if (fork() == 0) {
+        if (execlp("nano", "nano", name, NULL) == -1)
+        printf("exec failed\n");
+        exit(1);
+      } else {
+        int status;
+        wait(&status);
+        //do something w/ status?
+      }
+
+      //then take file and put that in buffer
+      lseek(fd, 0, SEEK_SET);
+      int len = read(fd, buffer, sizeof(buffer));
+      buffer[len] = 0;
+      printf("buffer: %s\n", buffer);
+      close(fd);
+      unlink(name);
+
     }
     else {
       printf("enter command: ");
+      fgets(buffer, sizeof(buffer), stdin);
     }
-    fgets(buffer, sizeof(buffer), stdin);
 
     if (!edit){
       *strchr(buffer, '\n') = 0;
@@ -34,6 +64,9 @@ int main(int argc, char **argv) {
 
       edit = has_edit(buffer);
     } else {
+      if (strlen(buffer) == 0)
+      strcpy(buffer, no_text);
+
       edit = 0;
     }
 
@@ -43,6 +76,13 @@ int main(int argc, char **argv) {
     printf("len: %d\n", len);
     buffer[len] = 0;
     printf("received: [%s]\n", buffer);
+
+    //if story actually doesn't exist, don't go into edit mode
+    if (strcmp(buffer, no_story) == 0)
+      edit = 0;
+    //if no text, don't have text
+    else if (strcmp(buffer, no_text) == 0)
+      *buffer = 0;
   }
 }
 
@@ -53,7 +93,7 @@ int has_edit(char *s) {
   char **args = parse_args(copy);
   int edit = 0;
   if (strcmp(args[0], "edit") == 0)
-    edit = 1;
+  edit = 1;
   free(args);
   return edit;
 }
