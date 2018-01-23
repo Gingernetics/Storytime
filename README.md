@@ -25,7 +25,9 @@ Kenny Chen, Fabiola Radosav, Jan Kowalski
 		`create [filename]` - creates the new story
 		`read [filename]` - reads the contents of the chosen file
 		`edit [filename]` - appends the user additions to the file
+		`remove [filename]` - removes the chosen file
 
+	File manupulation is limited to the stories directory, which does not include subdirectories.
 
 
 ###Known Bugs

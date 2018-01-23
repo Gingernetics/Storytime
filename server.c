@@ -73,14 +73,6 @@ void subserver(int client_socket) {
   exit(0);
 }
 
-/*
-Input:
-
-help
-create <name of story>
-read <name of story>
-edit <name of story>
-*/
 void process(int client_socket, char * buf) {
   char **args = parse_args(buf);
   char *input_error = "Please input a story name";
@@ -102,6 +94,11 @@ void process(int client_socket, char * buf) {
     edit(client_socket, buf, args[1]);
     else
     write(client_socket, input_error, strlen(input_error));
+  } else if (strcmp(*args, "remove") == 0) {
+    if (args[1])
+    remove_story(client_socket, buf, args[1]);
+    else
+    write(client_socket, input_error, strlen(input_error));
   } else if (strcmp(*args, "list") == 0) {
     list(client_socket, buf);
   } else {
@@ -114,7 +111,7 @@ void process(int client_socket, char * buf) {
 
 //print a list of valid commands
 void help(int client_socket, char *buf) {
-  char *s = "Valid commands:\n\thelp - get this list\n\tcreate [name of story]\n\tread [name of story]\n\tedit [name of story]\n\tlist - view available stories";
+  char *s = "Valid commands:\n\thelp - get this list\n\tcreate [name of story]\n\tread [name of story]\n\tedit [name of story]\n\tremove [name of story]\n\tlist - view available stories";
   write(client_socket, s, strlen(s));
 }
 
@@ -232,6 +229,25 @@ void list(int client_socket, char *buf) {
   write(client_socket, buf, strlen(buf));
 }
 
+void remove_story(int client_socket, char *buf, char *filename) {
+  if (!file_exists(client_socket, filename))
+    return;
+
+  if (!filename_handler(client_socket, filename))
+    return;
+
+  char *s;
+  if (remove(filename) == 0){
+    s = "Story successfully deleted.";
+  }
+  else{
+    s = "Unable to delete story.";
+  }
+  write(client_socket, s, strlen(s));
+  return;
+}
+
+
 //creates semaphore (if it doesn't exist) and checks the value
 int semaphore_handler(int client_socket, char *filename) {
   //create key using filename
@@ -268,6 +284,17 @@ int valid_file(char *s) {
 int filename_handler(int client_socket, char *filename) {
   if (!valid_file(filename)) {
     char *s = "Invalid file. Please don't change directories";
+    write(client_socket, s, strlen(s));
+    return 0;
+  }
+  return 1;
+}
+
+
+int file_exists(int client_socket, char *filename) {
+  int fd = open(filename, O_RDONLY);
+  if (fd == -1){
+    char *s = "This file does not exist.";
     write(client_socket, s, strlen(s));
     return 0;
   }
