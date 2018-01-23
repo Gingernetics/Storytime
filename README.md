@@ -7,12 +7,12 @@ Kenny Chen, Fabiola Radosav, Jan Kowalski
 
 ***
 
-###Purpose:
+### Purpose:
 	This program allows multiple clients to manage to contents of a story collection without running into read/write errors.
 	Note this has only been tested in UNIX environments, specifically Ubuntu 14/16
 
 
-###How to use:
+### How to use:
 	Once the repository is cloned, `make` is run to create executable files
 
 	`./client` - run the client
@@ -30,6 +30,6 @@ Kenny Chen, Fabiola Radosav, Jan Kowalski
 	File manupulation is limited to the stories directory, which does not include subdirectories.
 
 
-###Known Bugs
+### Known Bugs
 	Ending the server program before all instances of client will likely result in an `error[98] Address already in use` that prevents the recreation of server.
 	This error can be circumvented by either changing the port number or waiting a few minutes before attempting to restart the server.
