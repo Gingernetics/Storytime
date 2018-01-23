@@ -24,7 +24,7 @@ Kenny Chen, Fabiola Radosav, Jan Kowalski
 		`list` - lists the stories stored in the program
 		`create [filename]` - creates the new story
 		`read [filename]` - reads the contents of the chosen file
-		`edit [filename]` - appends the user additions to the file
+		`edit [filename]` - allows the user to edit the contents of a file through nano
 		`remove [filename]` - removes the chosen file
 
 	File manupulation is limited to the stories directory, which does not include subdirectories.
@@ -33,3 +33,7 @@ Kenny Chen, Fabiola Radosav, Jan Kowalski
 ### Known Bugs
 	Ending the server program before all instances of client will likely result in an `error[98] Address already in use` that prevents the recreation of server.
 	This error can be circumvented by either changing the port number or waiting a few minutes before attempting to restart the server.
+
+	The nano environment created  when the edit command is run does not display the correct file.
+
+	Editing a file may spawn a buffer file (ex. ".nfs00000000011b0fba0000000d")
