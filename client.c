@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
 
     }
     else {
-      printf("enter command: ");
+      printf("\n\tEnter command: \n\t\t");
       fgets(buffer, sizeof(buffer), stdin);
     }
 
@@ -73,9 +73,10 @@ int main(int argc, char **argv) {
     write(server_socket, buffer, strlen(buffer));
 
     int len = read(server_socket, buffer, sizeof(buffer));
-    printf("len: %d\n", len);
+    //printf("len: %d\n", len);
     buffer[len] = 0;
-    printf("received: [%s]\n", buffer);
+    //printf("received: [%s]\n", buffer);
+    printf("\n\t%s\n", buffer);
 
     //if story actually doesn't exist, don't go into edit mode
     if (strcmp(buffer, no_story) == 0)

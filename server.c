@@ -111,7 +111,7 @@ void process(int client_socket, char * buf) {
 
 //print a list of valid commands
 void help(int client_socket, char *buf) {
-  char *s = "Valid commands:\n\thelp - get this list\n\tcreate [name of story]\n\tread [name of story]\n\tedit [name of story]\n\tremove [name of story]\n\tlist - view available stories";
+  char *s = "Valid commands:\n\t\thelp - get this list\n\t\tcreate [name of story]\n\t\tread [name of story]\n\t\tedit [name of story]\n\t\tremove [name of story]\n\t\tlist - view available stories";
   write(client_socket, s, strlen(s));
 }
 
@@ -128,7 +128,7 @@ void create(int client_socket, char *buf, char *filename) {
   if(fd == -1)
   	sprintf(buf, "File already created: %s", f);
   else
-  	sprintf(buf, "Created file: %s", f);	
+  	sprintf(buf, "Created file: %s", f);
   write(client_socket, buf, strlen(buf));
   close(fd);
 }
@@ -151,7 +151,8 @@ void read_story(int client_socket, char *buf, char *filename) {
   return;
 
   int len = read(fd, buf, BUFFER_SIZE);
-  printf("len: %d\n", len);
+  //printf("len: %d\n", len);
+
   if (len == 0) {
     write(client_socket, no_text, strlen(no_text));
   } else
@@ -211,14 +212,21 @@ void list(int client_socket, char *buf) {
   DIR *d;
   struct dirent *dir;
   d = opendir(".");
+
+  int first_story = 0;
+
   if (d) {
     while ((dir = readdir(d)) != NULL) {
       char *name = dir->d_name;
       if (strcmp(name, ".") == 0 ||
       strcmp(name, "..") == 0)
       continue;
+      if (first_story){
+        strcat(buf, "\t");
+      }
       strcat(buf, dir->d_name);
       strcat(buf, "\n");
+      first_story++;
     }
     closedir(d);
   }
@@ -234,6 +242,11 @@ void remove_story(int client_socket, char *buf, char *filename) {
 
   if (!filename_handler(client_socket, filename))
     return;
+
+  int semid = semaphore_handler(client_socket, filename);
+  if (semid == -1)
+    return;
+
 
   char *s;
   if (remove(filename) == 0){
