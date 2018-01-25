@@ -22,8 +22,8 @@ void remove_semaphores(){
     while ((dir = readdir(d)) != NULL) {
       char *filename = dir->d_name;
       if (strcmp(filename, ".") == 0 ||
-      strcmp(filename, "..") == 0)
-      continue;
+          strcmp(filename, "..") == 0)
+        continue;
 
       //create key using filename
       int key = ftok(filename, 42);
@@ -31,7 +31,7 @@ void remove_semaphores(){
       //Gets semaphores for deletion
       int semid = semget(key, 0, 0);
       if (semid != -1)
-      semctl(semid, 0, IPC_RMID);
+        semctl(semid, 0, IPC_RMID);
     }
     closedir(d);
   }
@@ -52,9 +52,9 @@ int main() {
     int client_socket = server_connect(listen_socket);
     f = fork();
     if (f == 0)
-    subserver(client_socket);
+      subserver(client_socket);
     else
-    close(client_socket);
+      close(client_socket);
   }
 }
 
@@ -64,7 +64,7 @@ void subserver(int client_socket) {
   while (1) {
     int len = read(client_socket, buffer, sizeof(buffer));
     if (len == 0)
-    break;
+      break;
     buffer[len] = 0;
     printf("[subserver %d] received: [%s]\n", getpid(), buffer);
     process(client_socket, buffer);
@@ -81,24 +81,24 @@ void process(int client_socket, char * buf) {
     help(client_socket, buf);
   } else if (strcmp(*args, "create") == 0) {
     if (args[1])
-    create(client_socket, buf, args[1]);
+      create(client_socket, buf, args[1]);
     else
-    write(client_socket, input_error, strlen(input_error));
+      write(client_socket, input_error, strlen(input_error));
   } else if (strcmp(*args, "read") == 0) {
     if (args[1])
-    read_story(client_socket, buf, args[1]);
+      read_story(client_socket, buf, args[1]);
     else
-    write(client_socket, input_error, strlen(input_error));
+      write(client_socket, input_error, strlen(input_error));
   } else if (strcmp(*args, "edit") == 0) {
     if (args[1])
-    edit(client_socket, buf, args[1]);
+      edit(client_socket, buf, args[1]);
     else
-    write(client_socket, input_error, strlen(input_error));
+      write(client_socket, input_error, strlen(input_error));
   } else if (strcmp(*args, "remove") == 0) {
     if (args[1])
-    remove_story(client_socket, buf, args[1]);
+      remove_story(client_socket, buf, args[1]);
     else
-    write(client_socket, input_error, strlen(input_error));
+      write(client_socket, input_error, strlen(input_error));
   } else if (strcmp(*args, "list") == 0) {
     list(client_socket, buf);
   } else {
@@ -118,7 +118,7 @@ void help(int client_socket, char *buf) {
 //make the file with the given name, then let client edit it
 void create(int client_socket, char *buf, char *filename) {
   if (!filename_handler(client_socket, filename))
-  return;
+    return;
 
   char f[BUFFER_SIZE]; //don't use filename (part of buf)
   strcpy(f, filename);
@@ -126,9 +126,9 @@ void create(int client_socket, char *buf, char *filename) {
   int fd;
   fd = open(f, O_CREAT | O_EXCL , 0666);
   if(fd == -1)
-  	sprintf(buf, "File already created: %s", f);
+    sprintf(buf, "File already created: %s", f);
   else
-  	sprintf(buf, "Created file: %s", f);
+    sprintf(buf, "Created file: %s", f);
   write(client_socket, buf, strlen(buf));
   close(fd);
 }
@@ -136,7 +136,7 @@ void create(int client_socket, char *buf, char *filename) {
 //read the file, write to client
 void read_story(int client_socket, char *buf, char *filename) {
   if (!filename_handler(client_socket, filename))
-  return;
+    return;
 
   //check if story exists
   int fd = open(filename, O_EXCL | O_RDONLY);
@@ -148,7 +148,7 @@ void read_story(int client_socket, char *buf, char *filename) {
 
   int semid = semaphore_handler(client_socket, filename);
   if (semid == -1)
-  return;
+    return;
 
   int len = read(fd, buf, BUFFER_SIZE);
   //printf("len: %d\n", len);
@@ -156,14 +156,14 @@ void read_story(int client_socket, char *buf, char *filename) {
   if (len == 0) {
     write(client_socket, no_text, strlen(no_text));
   } else
-  write(client_socket, buf, len);
+    write(client_socket, buf, len);
   close(fd);
 }
 
 //read the file, prompt client for addition, then append to file
 void edit(int client_socket, char *buf, char *filename) {
   if (!filename_handler(client_socket, filename))
-  return;
+    return;
 
   char f[BUFFER_SIZE]; //don't use filename (part of buf)
   strcpy(f, filename);
@@ -178,7 +178,7 @@ void edit(int client_socket, char *buf, char *filename) {
 
   int semid = semaphore_handler(client_socket, filename);
   if (semid == -1)
-  return;
+    return;
 
   read_story(client_socket, buf, f);
 
@@ -195,7 +195,7 @@ void edit(int client_socket, char *buf, char *filename) {
 
   //if no input, don't write
   if (len != 0 && strcmp(buf, no_text) != 0)
-  write(fd, buf, strlen(buf));
+    write(fd, buf, strlen(buf));
   close(fd);
 
   //up
@@ -221,8 +221,8 @@ void list(int client_socket, char *buf) {
     while ((dir = readdir(d)) != NULL) {
       char *name = dir->d_name;
       if (strcmp(name, ".") == 0 ||
-      strcmp(name, "..") == 0)
-      continue;
+          strcmp(name, "..") == 0)
+        continue;
       if (first_story){
         strcat(buf, "\t");
       }
@@ -289,15 +289,16 @@ int semaphore_handler(int client_socket, char *filename) {
 
 //check if the file doesn't change directory
 int valid_file(char *s) {
-  //check if contains slashes
-  if (strchr(s, '/') == NULL)
-  return 1;
+  //check if contains slashes or starts with dot
+  if (strchr(s, '/') == NULL &&
+      *s != '.')
+    return 1;
   return 0;
 }
 
 int filename_handler(int client_socket, char *filename) {
   if (!valid_file(filename)) {
-    char *s = "Invalid file. Please don't change directories";
+    char *s = "Invalid file. Please don't change directories or use directories.";
     write(client_socket, s, strlen(s));
     return 0;
   }

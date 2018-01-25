@@ -8,9 +8,9 @@ int main(int argc, char **argv) {
   char buffer[BUFFER_SIZE];
 
   if (argc == 2)
-  server_socket = client_setup( argv[1]);
+    server_socket = client_setup( argv[1]);
   else
-  server_socket = client_setup( TEST_IP );
+    server_socket = client_setup( TEST_IP );
 
   printf("\t\t---------------------------------------------------\n");
   printf("\tWelcome to Storytime! Please type 'help' to recieve a list of commands.\n");
@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
       //fork, exec, wait
       if (fork() == 0) {
         if (execlp("nano", "nano", name, NULL) == -1)
-        printf("exec failed\n");
+          printf("exec failed\n");
         exit(1);
       } else {
         int status;
@@ -51,30 +51,27 @@ int main(int argc, char **argv) {
       //printf("buffer: %s\n", buffer);
       close(fd);
       unlink(name);
+      
+      if (strlen(buffer) == 0)
+        strcpy(buffer, no_text);
 
+      edit = 0;
     }
     else {
       if (first_prompt){
         first_prompt--;
       }
       else{
-        printf("\n\t\t\t--^--^--\n");
+        printf("\n\t\t--^--^--\n");
       }
-      printf("\n\tEnter command: \n\t\t");
+      printf("\nEnter command: \n\t");
       fgets(buffer, sizeof(buffer), stdin);
-    }
 
-    if (!edit){
       *strchr(buffer, '\n') = 0;
       if (strlen(buffer) == 0)
-      strcpy(buffer, "temp");
+        strcpy(buffer, "temp");
 
       edit = has_edit(buffer);
-    } else {
-      if (strlen(buffer) == 0)
-      strcpy(buffer, no_text);
-
-      edit = 0;
     }
 
     write(server_socket, buffer, strlen(buffer));
@@ -83,7 +80,7 @@ int main(int argc, char **argv) {
     //printf("len: %d\n", len);
     buffer[len] = 0;
     //printf("received: [%s]\n", buffer);
-    printf("\n\t%s\n", buffer);
+    printf("\n%s\n", buffer);
 
     //if story actually doesn't exist, don't go into edit mode
     if (strcmp(buffer, no_story) == 0)
@@ -101,7 +98,7 @@ int has_edit(char *s) {
   char **args = parse_args(copy);
   int edit = 0;
   if (strcmp(args[0], "edit") == 0)
-  edit = 1;
+    edit = 1;
   free(args);
   return edit;
 }
