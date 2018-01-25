@@ -233,6 +233,7 @@ void list(int client_socket, char *buf) {
   write(client_socket, buf, strlen(buf));
 }
 
+//removes story (and semaphore)
 void remove_story(int client_socket, char *buf, char *filename) {
   if (!file_exists(client_socket, filename))
     return;
@@ -246,14 +247,16 @@ void remove_story(int client_socket, char *buf, char *filename) {
 
 
   char *s;
-  if (remove(filename) == 0){
+  if (remove(filename) == 0) {
     s = "Story successfully deleted.";
-  }
-  else{
+
+    //remove semaphore
+    semctl(semid, 0, IPC_RMID);
+
+  } else {
     s = "Unable to delete story.";
   }
   write(client_socket, s, strlen(s));
-
   
   return;
 }
