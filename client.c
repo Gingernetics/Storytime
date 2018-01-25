@@ -17,6 +17,7 @@ int main(int argc, char **argv) {
   printf("\t\t---------------------------------------------------\n");
 
   int edit = 0;
+  int first_prompt = 1;
 
   while (1) {
     if (edit) {
@@ -25,10 +26,10 @@ int main(int argc, char **argv) {
       //write buffer to file
       char name[17] = "storyXXXXXX";
       int fd = mkstemp(name);
-      printf("fd: %d\tname: %s\n", fd, name);
+      //printf("fd: %d\tname: %s\n", fd, name);
       write(fd, buffer, strlen(buffer));
 
-      printf("buffer: %s\n", buffer);
+      //printf("buffer: %s\n", buffer);
 
       //use default text editor by getting environment variables
       //use nano for now
@@ -47,12 +48,18 @@ int main(int argc, char **argv) {
       lseek(fd, 0, SEEK_SET);
       int len = read(fd, buffer, sizeof(buffer));
       buffer[len] = 0;
-      printf("buffer: %s\n", buffer);
+      //printf("buffer: %s\n", buffer);
       close(fd);
       unlink(name);
 
     }
     else {
+      if (first_prompt){
+        first_prompt--;
+      }
+      else{
+        printf("\n\t\t\t--^--^--\n");
+      }
       printf("\n\tEnter command: \n\t\t");
       fgets(buffer, sizeof(buffer), stdin);
     }

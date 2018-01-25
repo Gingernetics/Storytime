@@ -202,7 +202,9 @@ void edit(int client_socket, char *buf, char *filename) {
   arg.sem_op = 1;
   semop(semid, &arg, 1);
 
-  read_story(client_socket, buf, f);
+  //read_story(client_socket, buf, f);
+  char *message = "\tFile successfully edited.\n";
+  write(client_socket, message, strlen(message));
 }
 
 //list the stories

@@ -27,10 +27,12 @@ Kenny Chen, Fabiola Radosav, Jan Kowalski
 		`edit [filename]` - allows the user to edit the contents of a file through nano
 		`remove [filename]` - removes the chosen file
 
-	File manupulation is limited to the stories directory, which does not include subdirectories.
+	File manipulation is limited to the stories directory, which does not include subdirectories.
+
+  To end a client session use the session interrupt key (Ctrl - c).
 
 
-### Known Bugs
+### Known Bugs:
 	Ending the server program before all instances of client will likely result in an `error[98] Address already in use` that prevents the recreation of server.
 	This error can be circumvented by either changing the port number or waiting a few minutes before attempting to restart the server.
 
