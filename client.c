@@ -94,8 +94,9 @@ int main(int argc, char **argv) {
     //printf("received: [%s]\n", buffer);
     printf("\n%s\n", buffer);
 
-    //if story actually doesn't exist, don't go into edit mode
-    if (strcmp(buffer, no_story) == 0)
+    //if not editing story, don't go into edit mode
+    if (strcmp(buffer, no_story) == 0 ||
+        strcmp(buffer, editing_story) == 0)
       edit = 0;
     //if no text, don't have text
     else if (strcmp(buffer, no_text) == 0)

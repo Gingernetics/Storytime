@@ -111,7 +111,7 @@ void process(int client_socket, char * buf) {
 
 //print a list of valid commands
 void help(int client_socket, char *buf) {
-  char *s = "Valid commands:\n\thelp - get this list\n\tcreate [name of story]\n\tread [name of story]\n\tedit [name of story]\n\tremove [name of story]\n\tlist - view available stories";
+  char *s = "Valid commands:\n\thelp - get this list\n\tlist - view available stories\n\tcreate [name of story]\n\tread [name of story]\n\tedit [name of story]\n\tremove [name of story]";
   write(client_socket, s, strlen(s));
 }
 
@@ -279,8 +279,7 @@ int semaphore_handler(int client_socket, char *filename) {
 
   //check value of semaphore
   if (semctl(semid, 0, GETVAL) == 0) {
-    char *s = "Someone is editing the story. Please wait.";
-    write(client_socket, s, strlen(s));
+    write(client_socket, editing_story, strlen(editing_story));
     return -1;
   }
 

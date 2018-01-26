@@ -111,26 +111,32 @@ int client_setup(char * server) {
 }
 
 /*
-ex: takes "ls -a -l"
-returns array ["ls", "-a", "-l", NULL]
-
-assume no more than 19 args
+ex: takes "create The Red Prince"
+returns array ["create", "The Red Prince"]
+  or "create"
+returns ["create", NULL]
 */
 char **parse_args(char *line) {
   //pointer to "array"; free this later
-  char **args = malloc(20 * sizeof(char *));
+  char **args = malloc(2 * sizeof(char *));
 
   int i = 0;
-  while (line) {
-    char *arg = strsep(&line, " ");
-    //get rid of extra spaces
-    if (strcmp(arg, "") == 0){
-      continue;
-    }
-    args[i] = arg;
+  int len = strlen(line);
+  while (line[i] == ' ')
+    i++;
+  args[0] = line + i;
+  
+  while (i < len && line[i] != ' ')
+    i++;
+  while (i < len && line[i] == ' ') {
+    line[i] = 0;
     i++;
   }
-  args[i] = NULL;
 
+  if (i < len)
+    args[1] = line + i;
+  else
+    args[1] = NULL;
+  
   return args;
 }

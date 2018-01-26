@@ -26,6 +26,7 @@ int client_setup(char * server);
 
 #define no_story "There is no such story."
 #define no_text "<There is no text>"
+#define editing_story "Someone is editing the story. Please wait."
 
 char ** parse_args(char *line);
 
