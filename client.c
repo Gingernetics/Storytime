@@ -39,7 +39,7 @@ int main(int argc, char **argv) {
         editor = "nano";
         printf("default editor not found\n");
       }
-      printf("editor: %s\n", editor);
+      printf("\neditor: %s\n", editor);
       
       //fork, exec, wait
       if (fork() == 0) {
@@ -74,7 +74,7 @@ int main(int argc, char **argv) {
         first_prompt--;
       }
       else{
-        printf("\n\t\t--^--^--\n");
+        printf("\t\t--^--^--\n");
       }
       printf("\nEnter command: \n\t");
       fgets(buffer, sizeof(buffer), stdin);
@@ -92,14 +92,11 @@ int main(int argc, char **argv) {
     //printf("len: %d\n", len);
     buffer[len] = 0;
     //printf("received: [%s]\n", buffer);
-    printf("\n%s\n", buffer);
-
-    //if not editing story, don't go into edit mode
-    if (strcmp(buffer, no_story) == 0 ||
-        strcmp(buffer, editing_story) == 0)
-      edit = 0;
-    //if no text, don't have text
+    
+    if (!edit)
+      printf("\n%s\n", buffer);
     else if (strcmp(buffer, no_text) == 0)
+      //if no text, don't have text
       *buffer = 0;
   }
 }
@@ -110,7 +107,10 @@ int has_edit(char *s) {
 
   char **args = parse_args(copy);
   int edit = 0;
-  if (strcmp(args[0], "edit") == 0)
+  if (strcmp(args[0], "edit") == 0 &&
+      //if not editing story, don't go into edit mode
+      strcmp(s, no_story) != 0 &&
+      strcmp(s, editing_story) != 0)
     edit = 1;
   free(args);
   return edit;

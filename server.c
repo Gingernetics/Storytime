@@ -111,7 +111,7 @@ void process(int client_socket, char * buf) {
 
 //print a list of valid commands
 void help(int client_socket, char *buf) {
-  char *s = "Valid commands:\n\thelp - get this list\n\tlist - view available stories\n\tcreate [name of story]\n\tread [name of story]\n\tedit [name of story]\n\tremove [name of story]";
+  char *s = "Valid commands:\n\thelp - get this list\n\tlist - view available stories\n\tcreate [name of story]\n\tread [name of story]\n\tedit [name of story]\n\tremove [name of story]\n";
   write(client_socket, s, strlen(s));
 }
 
@@ -126,9 +126,9 @@ void create(int client_socket, char *buf, char *filename) {
   int fd;
   fd = open(f, O_CREAT | O_EXCL , 0666);
   if(fd == -1)
-    sprintf(buf, "File already created: %s", f);
+    sprintf(buf, "File already created: %s\n", f);
   else
-    sprintf(buf, "Created file: %s", f);
+    sprintf(buf, "Created file: %s\n", f);
   write(client_socket, buf, strlen(buf));
   close(fd);
 }
@@ -203,7 +203,7 @@ void edit(int client_socket, char *buf, char *filename) {
   semop(semid, &arg, 1);
 
   //read_story(client_socket, buf, f);
-  char *message = "\tFile successfully edited.\n";
+  char *message = "File successfully edited.\n";
   write(client_socket, message, strlen(message));
 }
 
@@ -248,7 +248,7 @@ void remove_story(int client_socket, char *buf, char *filename) {
 
   char *s;
   if (remove(filename) == 0) {
-    s = "Story successfully deleted.";
+    s = "Story successfully deleted.\n";
 
     //remove semaphore
     semctl(semid, 0, IPC_RMID);
