@@ -8,7 +8,7 @@ Kenny Chen, Fabiola Radosav, Jan Kowalski
 ***
 
 ### Purpose:
-	This program allows multiple clients to manage to contents of a story collection without running into read/write errors.
+	This program allows multiple clients to manage the contents of a story collection without running into read/write errors.
 	Note this has only been tested in UNIX environments, specifically Ubuntu 14/16
 
 
