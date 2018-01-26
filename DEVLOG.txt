@@ -1,10 +1,11 @@
 Timestamps
-|^| Kenny Chen |^| 1/18/18 |^| :30 - 11:00|^|
+
+|^| Kenny Chen && Jan Kowalski && Fabiola Radosav |^| - 1/10/18 |^| 10:30 - 11:00 |^|
         Progress:
-                - Port functionality from dwsource networking example
+                - Port forking server
+                - Initial work on Storytime
 
-
-|^| Kenny Chen && Jan Kowalski && Fabiola Radosav |^| 1/10/18 |^| 10:30 - 11:00|^|
+|^| Kenny Chen && Jan Kowalski && Fabiola Radosav |^| 1/10/18 |^| 10:30 - 11:00 |^|
         Progress:
                 - Updated the server from forking variety to sockets
                 - Initialize help function
@@ -19,13 +20,13 @@ Timestamps
 		- Improved user interface
 		- Implemented the file creation system
 
-|^| Kenny Chen && Jan Kowalski && Fabiola Radosav |^| 1/18/18 |^| 10:30 - 11:00|^|
+|^| Kenny Chen && Jan Kowalski && Fabiola Radosav |^| 1/18/18 |^| 10:30 - 11:00 |^|
         Progress:
                 - Set the directory to be story on startup
                 - Began work on acessing files
 
 
-|^| Kenny Chen && Jan Kowalski && Fabiola Radosav |^| 1/19/18 |^| 10:30 - 11:00|^|
+|^| Kenny Chen && Jan Kowalski && Fabiola Radosav |^| 1/19/18 |^| 10:30 - 11:00 |^|
         Progress:
                 - Passed Buffer correctly
                 - Implemented read function
