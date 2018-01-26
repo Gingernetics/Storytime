@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
       //fork, exec, wait
       if (fork() == 0) {
         if (execlp(editor, editor, name, NULL) == -1)
-          printf("exec failed\n");
+          printf("exec failed. Set a valid text editor?\n");
         exit(1);
       } else {
         int status;
