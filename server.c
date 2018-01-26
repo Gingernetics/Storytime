@@ -125,7 +125,7 @@ void create(int client_socket, char *buf, char *filename) {
 
   int fd;
   fd = open(f, O_CREAT | O_EXCL , 0666);
-  if(fd == -1)
+  if (fd == -1)
     sprintf(buf, "File already created: %s\n", f);
   else
     sprintf(buf, "Created file: %s\n", f);
@@ -138,26 +138,21 @@ void read_story(int client_socket, char *buf, char *filename) {
   if (!filename_handler(client_socket, filename))
     return;
 
-  //check if story exists
-  int fd = open(filename, O_EXCL | O_RDONLY);
-  if (fd == -1) {
-    char *s = "There is no such story.";
-    write(client_socket, s, strlen(s));
+  if (!file_exists(client_socket, filename))
     return;
-  }
-
-  int semid = semaphore_handler(client_socket, filename);
-  if (semid == -1)
+  
+  if (semaphore_handler(client_socket, filename) == -1)
     return;
 
+  int fd = open(filename, O_RDONLY);
   int len = read(fd, buf, BUFFER_SIZE);
   //printf("len: %d\n", len);
-
+  close(fd);
+  
   if (len == 0) {
     write(client_socket, no_text, strlen(no_text));
   } else
     write(client_socket, buf, len);
-  close(fd);
 }
 
 //read the file, prompt client for addition, then append to file
@@ -169,12 +164,8 @@ void edit(int client_socket, char *buf, char *filename) {
   strcpy(f, filename);
 
   //check if story exists
-  int fd = open(f, O_EXCL | O_WRONLY | O_APPEND, 0666);
-  if (fd == -1) {
-    write(client_socket, no_story, strlen(no_story));
+  if (!file_exists(client_socket, filename))
     return;
-  }
-  close(fd);
 
   int semid = semaphore_handler(client_socket, filename);
   if (semid == -1)
@@ -189,7 +180,7 @@ void edit(int client_socket, char *buf, char *filename) {
   arg.sem_flg = SEM_UNDO | IPC_NOWAIT;
   semop(semid, &arg, 1);
 
-  fd = open(f, O_EXCL | O_WRONLY | O_TRUNC, 0666);
+  int fd = open(f, O_EXCL | O_WRONLY | O_TRUNC, 0666);
   int len = read(client_socket, buf, BUFFER_SIZE);
   buf[len] = 0;
 
