@@ -300,8 +300,7 @@ int filename_handler(int client_socket, char *filename) {
 int file_exists(int client_socket, char *filename) {
   int fd = open(filename, O_RDONLY);
   if (fd == -1){
-    char *s = "This file does not exist.";
-    write(client_socket, s, strlen(s));
+    write(client_socket, no_story, strlen(no_story));
     return 0;
   }
   close(fd);
