@@ -200,7 +200,8 @@ void edit(int client_socket, char *buf, char *filename) {
 
 //list the stories
 void list(int client_socket, char *buf) {
-  strcpy(buf, "Stories:\n");
+  char *s = "Stories:\n";
+  strcpy(buf, s);
   
   DIR *d;
   struct dirent *dir;
@@ -219,7 +220,7 @@ void list(int client_socket, char *buf) {
     closedir(d);
   }
 
-  if (strlen(buf) == 0)
+  if (strcmp(buf, s) == 0)
     strcpy(buf, "There are no stories. :(");
   write(client_socket, buf, strlen(buf));
 }
