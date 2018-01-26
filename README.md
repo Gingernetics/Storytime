@@ -35,7 +35,7 @@ Kenny Chen, Fabiola Radosav, Jan Kowalski
 ### Known Bugs:
 	Ending the server program before all instances of client will likely result in an `error[98] Address already in use` that prevents the recreation of server.
 	This error can be circumvented by either changing the port number or waiting a few minutes before attempting to restart the server.
-
-	The nano environment created  when the edit command is run does not display the correct file.
-
-	Editing a file may spawn a buffer file (ex. ".nfs00000000011b0fba0000000d")
+	
+### Note:
+	When editing, a file that looks like storyXXXXXX will be created. This will hold the contents of the story.
+	Changes made to this file will be transmitted to the server's file.
