@@ -24,7 +24,7 @@ Kenny Chen, Fabiola Radosav, Jan Kowalski
 		`list` - lists the stories stored in the program
 		`create [filename]` - creates the new story
 		`read [filename]` - reads the contents of the chosen file
-		`edit [filename]` - allows the user to edit the contents of a file through nano
+		`edit [filename]` - allows the user to edit the contents of a file through the default text editor (or nano)
 		`remove [filename]` - removes the chosen file
 
 	File manipulation is limited to the stories directory, which does not include subdirectories.
@@ -35,6 +35,9 @@ Kenny Chen, Fabiola Radosav, Jan Kowalski
 ### Known Bugs:
 	Ending the server program before all instances of client will likely result in an `error[98] Address already in use` that prevents the recreation of server.
 	This error can be circumvented by either changing the port number or waiting a few minutes before attempting to restart the server.
+	
+	Having a story's content only be no_story, no_text, or editing_story (defined in utils.h) can make editing go bad. Don't do that.
+	Doing that is dumb anyways.
 	
 ### Note:
 	When editing, a file that looks like storyXXXXXX will be created. This will hold the contents of the story.
