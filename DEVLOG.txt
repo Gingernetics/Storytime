@@ -36,7 +36,19 @@ Timestamps
                 - Inputing only newline killed client
         Progress:
                 - Added edit
+		- Added ability to use nano to edit
                 - Added semaphores
                 - Added list
-                - Change prompt for editing
+		- Added remove
                 - Remove semaphores at program end (w/ signal handler)
+
+|^| Jan Kowalski |^| 1/25/18 |^| 3:00 - 5:00 |^|
+	Progress:
+		- Better UI
+
+|^| Kenny Chen |^| 1/25/18 |^| 5:00 - 10:00 |^|
+	Errors Uncovered:
+		- Stories with spaces are not parsed correctly
+		- On client side, match state of editing with server's
+	Progress:
+		- Use default text editor (or nano)
