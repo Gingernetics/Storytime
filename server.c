@@ -313,5 +313,6 @@ int file_exists(int client_socket, char *filename) {
     write(client_socket, s, strlen(s));
     return 0;
   }
+  close(fd);
   return 1;
 }
