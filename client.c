@@ -28,14 +28,22 @@ int main(int argc, char **argv) {
       int fd = mkstemp(name);
       //printf("fd: %d\tname: %s\n", fd, name);
       write(fd, buffer, strlen(buffer));
-
+      
       //printf("buffer: %s\n", buffer);
-
+      close(fd);
+      
       //use default text editor by getting environment variables
-      //use nano for now
+      //use nano if not found
+      char *editor = getenv("EDITOR");
+      if (!editor) {
+        editor = "nano";
+        printf("default editor not found\n");
+      }
+      printf("editor: %s\n", editor);
+      
       //fork, exec, wait
       if (fork() == 0) {
-        if (execlp("nano", "nano", name, NULL) == -1)
+        if (execlp(editor, editor, name, NULL) == -1)
           printf("exec failed\n");
         exit(1);
       } else {
@@ -45,12 +53,16 @@ int main(int argc, char **argv) {
       }
 
       //then take file and put that in buffer
-      lseek(fd, 0, SEEK_SET);
-      int len = read(fd, buffer, sizeof(buffer));
-      buffer[len] = 0;
-      //printf("buffer: %s\n", buffer);
-      close(fd);
-      unlink(name);
+      fd = open(name, O_RDONLY);
+      if (fd == -1) {
+        printf("Error opening file again\n");
+      } else {
+        int len = read(fd, buffer, sizeof(buffer));
+        buffer[len] = 0;
+        //printf("buffer: %s\n", buffer);
+        close(fd);
+        remove(name);
+      }
       
       if (strlen(buffer) == 0)
         strcpy(buffer, no_text);
