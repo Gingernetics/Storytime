@@ -95,7 +95,8 @@ int main(int argc, char **argv) {
 
     //if not editing story, don't go into edit mode
     if (strcmp(buffer, no_story) == 0 ||
-        strcmp(buffer, editing_story) == 0)
+        strcmp(buffer, editing_story) == 0 ||
+        strcmp(buffer, invalid_story) == 0)
       edit = 0;
      
     if (!edit)

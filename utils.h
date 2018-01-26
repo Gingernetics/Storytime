@@ -25,6 +25,7 @@ int server_connect(int sd);
 int client_setup(char * server);
 
 #define no_story "There is no such story."
+#define invalid_story "Invalid file. Please don't change directories or use directories."
 #define no_text "<There is no text>"
 #define editing_story "Someone is editing the story. Please wait."
 

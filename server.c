@@ -289,8 +289,7 @@ int valid_file(char *s) {
 
 int filename_handler(int client_socket, char *filename) {
   if (!valid_file(filename)) {
-    char *s = "Invalid file. Please don't change directories or use directories.";
-    write(client_socket, s, strlen(s));
+    write(client_socket, invalid_story, strlen(invalid_story));
     return 0;
   }
   return 1;
